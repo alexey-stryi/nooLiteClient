@@ -1,0 +1,81 @@
+// The following two lines import the default Sencha Touch theme. If you are building
+// a new theme, remove them and the add your own CSS on top of the base CSS (which
+// is already included in your app.json file).
+@import 'sencha-touch/default';
+@import 'sencha-touch/default/all';
+
+// Custom code goes here..
+
+// Examples of using the icon mixin:
+// @include icon('user');
+
+@include icon('check2');
+@include icon('settings2');
+
+
+.x-toolbar {
+  .x-button-plain {
+    .x-button-icon {
+      font-size : 1.3em;      
+    }
+  }   
+}
+
+.separator {
+    background-image: url('../images/tb_separator.png') !important;
+    background-position: center !important;
+    background-repeat: repeat-y  !important;
+    background-color: transparent !important;
+    margin: 0px !important;
+    height: 45px !important;
+}
+
+.x-field {
+  &.x-invalid {
+    input.x-form-field {
+      border: 1px solid #c30 !important;
+    }
+  }
+}
+
+
+.bulb-data-item-text {
+  color: white;
+}
+
+
+.x-popup-menu {
+  box-shadow: 0 0 0.5em;
+  border-radius: 0.3em;
+  color: $list-color;
+  background: $list-bg-color;
+}
+
+.x-popup-menu .x-anchor.x-anchor-left,
+.x-popup-menu .x-anchor.x-anchor-right,
+.x-popup-menu .x-anchor.x-anchor-top,
+.x-popup-menu .x-anchor.x-anchor-bottom {
+  background: $list-bg-color;
+}
+.x-popup-menu .x-button-label {
+  text-align: left;
+}
+
+
+.x-color-picker {
+  .x-html {
+    padding: 0;
+  }
+  .color-wheel-container {
+    width: 300px;
+    margin: 0 auto;
+  }
+}
+
+
+.x-panel {
+  &.x-floating {
+    background-color: #ccc;
+  }
+}
+
