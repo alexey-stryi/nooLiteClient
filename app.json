@@ -39,6 +39,10 @@
      *      }
      */
     "js": [
+		{
+			"path": "cordova.js",
+			"remote": true
+		},
         {
             "path": "touch/sencha-touch.js",
             "x-bootstrap": true
@@ -53,8 +57,7 @@
             "update": "delta"
         },
         {
-            "path": "resources/js/huewheel.min.js",
-            "update": "delta"
+            "path": "resources/js/huewheel.min.js"
         }
     ],
 
