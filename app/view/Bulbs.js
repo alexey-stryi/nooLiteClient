@@ -30,7 +30,7 @@ Ext.define('nooControl.view.Bulbs', {
                 iconCls : 'arrow_left',
                 itemId  : 'button_back',
                 align   : 'left'
-            }]            
+            }]
         }, {
             xtype         : 'dataview',
             width         : '100%',

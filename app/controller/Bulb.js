@@ -71,7 +71,12 @@ Ext.define('nooControl.controller.Bulb', {
     onAddNewBulbTapped: function() {
         var form  = this.getNewBulbForm(),
             store = Ext.getStore('Bulbs'),
-            bulb  = store.add({})[0];
+            bulb  = store.add({})[0],
+            bulbsPanel = this.getBulbsPanel();
+
+        if (this.getMainView().getActiveItem() === bulbsPanel) {
+            bulb.set('location', bulbsPanel.down('titlebar').getTitle());
+        }
 
         form.setRecord(bulb);
         this.getMainView().setActiveItem(form);
@@ -187,9 +192,17 @@ Ext.define('nooControl.controller.Bulb', {
             return Ext.Msg.alert('Bulb is binded', 'You need to unbind it first!');
         }
 
-        store.remove(bulb);
-        store.sync();
-        dataItem.parent.remove(dataItem);
+        Ext.Msg.confirm('Delete', 'Are you sure?', function(btn) {
+            if (btn === 'yes') {
+                store.remove(bulb);
+                store.sync({
+                    success : function() {
+                        Ext.Msg.alert('Delete', Ext.String.format('Bulb "{0}" has been deleted', bulb.get('name')));
+                    }
+                });
+                dataItem.parent.remove(dataItem);
+            }
+        });
     },
 
 /*****************************************************************************/
@@ -201,6 +214,10 @@ Ext.define('nooControl.controller.Bulb', {
             bulb   = store.getById(form.getRecord().get('id'));
 
         bulb.set(form.getValues());
+
+        if (!bulb.isValid()) {
+            return Ext.Msg.alert('Validation failed', 'Some field values are invalid or missing!');
+        }
 
         store.sync({
             success : function() {

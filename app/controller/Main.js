@@ -5,7 +5,7 @@ Ext.define('nooControl.controller.Main', {
         common: 'nooControl.controller.mixin.Common'
     },
 
-    
+
     config: {
         control: {
             'button#settings_button': {
@@ -51,12 +51,12 @@ Ext.define('nooControl.controller.Main', {
         Ext.getStore('Bulbs').rejectChanges();
         this.showHomeScreen();
     },
-    
+
 /*****************************************************************************/
-    
+
     onLocationsListItemTapped : function(list, idx, target, record) {
         var bulbsPanel = this.getBulbsPanel();
-        
+
         bulbsPanel.down('titlebar').setTitle(record.get('name'));
         bulbsPanel.down('dataview').setStore(record.bulbs());
 

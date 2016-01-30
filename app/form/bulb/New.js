@@ -32,18 +32,20 @@ Ext.define('nooControl.form.bulb.New', {
                 align   : 'left'
             }]
         },{
-            xtype      : 'textfield',
-            name       : 'name',
-            labelAlign : 'top',
-            label      : 'Name',
-            allowBlank : false,
+            xtype        : 'textfield',
+            name         : 'name',
+            labelAlign   : 'top',
+            label        : 'Name',
+            allowBlank   : false,
+            placeHolder  : 'Bulb',
             autoComplete : false
         },{
-            xtype      : 'textfield',
-            name       : 'location',
-            labelAlign : 'top',
-            label      : 'Location',
-            allowBlank : false,
+            xtype        : 'textfield',
+            name         : 'location',
+            labelAlign   : 'top',
+            label        : 'Location',
+            allowBlank   : false,
+            placeHolder  : 'Some location',
             autoComplete : false
         },{
             xtype      : 'selectfield',

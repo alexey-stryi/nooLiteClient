@@ -4,8 +4,8 @@ Ext.define('nooControl.model.Bulb', {
     config : {
         fields : [
             {name: 'id',       type: 'string'},
-            {name: 'name',     type: 'string',  defaultValue: 'Bulb'},
-            {name: 'location', type: 'string',  defaultValue: 'Some location'},
+            {name: 'name',     type: 'string',  defaultValue: ''},
+            {name: 'location', type: 'string',  defaultValue: ''},
             {name: 'state',    type: 'string',  defaultValue: 'off'},
             {name: 'binded',   type: 'boolean', defaultValue: false},
             {name: 'type',     type: 'string',  defaultValue: 'switch'},
@@ -20,10 +20,10 @@ Ext.define('nooControl.model.Bulb', {
 
         validations: [
             {type: 'presence',  field: 'name'},
-            {type: 'length',    field: 'name',     min: 2},
-            {type: 'inclusion', field: 'state',   list: ['on', 'off']},
-            {type: 'inclusion', field: 'type',    list: ['switch', 'button', 'dimmer', 'led']},
-            {type: 'format',    field: 'color',   matcher: /^#?[0-9A-F]{6}$/i}
+            {type: 'length',    field: 'name',  min: 2},
+            {type: 'inclusion', field: 'state', list: ['on', 'off']},
+            {type: 'inclusion', field: 'type',  list: ['switch', 'button', 'dimmer', 'led']},
+            {type: 'format',    field: 'color', matcher: /^#?[0-9A-F]{6}$/i}
         ]
     }
 });
