@@ -60,7 +60,7 @@ Ext.define('Ext.ux.menu.Menu', {
           ui:      'plain',
           handler: function(button) {
             menu.hide();
-            callback(button.config.value);
+            callback(button.config.value, button);
           }
         },
         items:     items,

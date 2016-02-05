@@ -87,7 +87,7 @@ Ext.define('nooControl.form.bulb.ColorPicker', {
             diameter             : me.getWheelDiameter(),
             shadowBlur           : 7,
             thicknessHue         : 35,
-            thicknessLightness   : 15,
+            thicknessLightness   : 20,
 
             lightness            : 0.5,
 
@@ -236,7 +236,7 @@ Ext.define('nooControl.form.bulb.ColorPicker', {
 
     getWheelDiameter : function() {
         var me = this;
-        
+
         if (Ext.os.deviceType === 'Phone') {
             return  (Ext.Viewport.getOrientation() === 'portrait') ? me.getWidth() - 30 : 230;
         }

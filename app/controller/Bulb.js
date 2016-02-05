@@ -54,6 +54,14 @@ Ext.define('nooControl.controller.Bulb', {
 
             'button#done_color_pick' : {
                 tap : 'onDoneColorPickTapped'
+            },
+
+            'button#led_start_roll_button': {
+                tap: 'onBulbStartRollButtonTapped'
+            },
+
+            'button#led_stop_roll_button': {
+                tap: 'onBulbStopRollButtonTapped'
             }
         },
 
@@ -85,37 +93,49 @@ Ext.define('nooControl.controller.Bulb', {
 /*****************************************************************************/
 
     onBulbSettingsButtonTapped: function(btn) {
-        var controller = this, options = [],
+        var controller = this,
             dataItem   = btn.up('BulbDataItem'),
             store      = Ext.getStore('Bulbs'),
-            bulb       = store.getById(dataItem._record.get('id'));
+            bulb       = store.getById(dataItem._record.get('id')),
+            options    = controller.getMenuOptions(bulb);
 
-        options.push({text : 'Edit',   value: 'edit'});
-
-        if (bulb.get('binded')) {
-            options.push({text : 'Unbind',   value: 'unbind'});
-        } else {
-            options.push({text : 'Bind',   value: 'bind'});
-        }
-
-        options.push({text : 'Delete', value: 'delete'});
-
-        Ext.ux.menu.Menu.open(btn, options, function(value) {
+        Ext.ux.menu.Menu.open(btn, options, function(value, menuItem) {
             switch (value) {
                 case 'edit' :
-                    controller.onBulbEditButtonTapped(dataItem, bulb);
+                    controller.onBulbEditButtonTapped(bulb);
                     break;
                 case 'bind' :
-                    controller.onBulbBindButtonTapped(dataItem, bulb);
+                    controller.onBulbBindButtonTapped(bulb, menuItem.config.channel);
                     break;
                 case 'unbind' :
-                    controller.onBulbUnbindButtonTapped(dataItem, bulb);
+                    controller.onBulbUnbindButtonTapped(bulb, menuItem.config.channel);
                     break;
                 case 'delete' :
-                    controller.onBulbDeleteButtonTapped(dataItem, bulb);
+                    controller.onBulbDeleteButtonTapped(bulb, dataItem);
                     break;
             }
         });
+    },
+
+/*****************************************************************************/
+
+    getMenuOptions : function(bulb) {
+        var binded   = bulb.get('binded'), options = [],
+            channels = bulb.get('channels');
+
+        options.push({text : 'Edit',   value: 'edit'});
+
+        Ext.Array.each(channels, function(ch, idx) {
+            var action = binded[ch] ? 'Unbind' : 'Bind',
+                extra  = channels.length > 1 ? (idx === 0 ? 'main' : 'LED')  : '',
+                text   = Ext.String.format('{0} {1}', action, extra).trim();
+
+            options.push({text : text,  value: action.toLowerCase(), channel : ch});
+        });
+
+        options.push({text : 'Delete', value: 'delete'});
+
+        return options;
     },
 
 /*****************************************************************************/
@@ -150,45 +170,47 @@ Ext.define('nooControl.controller.Bulb', {
 
 /*****************************************************************************/
 
-    onBulbEditButtonTapped : function(dataItem, bulb) {
+    onBulbEditButtonTapped : function(bulb) {
         this.getNewBulbForm().setRecord(bulb);
         this.getMainView().setActiveItem(1);
     },
 
 /*****************************************************************************/
 
-    onBulbBindButtonTapped : function(dataItem, bulb) {
-        var controller = this,
-            store      = Ext.getStore('Bulbs');
+    onBulbBindButtonTapped : function(bulb, channel) {
+        var binded = bulb.get('binded');
 
-        if (!bulb) {
-            return;
+        if (typeof(binded) !== "object") {
+            binded = {};
         }
-        bulb.set('binded', true);
+        binded[channel] = 1;
 
-        this.performRequest(Ext.String.format('/{0}/', bulb.get('id')), 'LINK', bulb);
+        bulb.set('binded', binded);
+
+        this.performRequest(Ext.String.format('/{0}/{1}', bulb.get('id'), channel), 'LINK', bulb);
     },
 
 /*****************************************************************************/
 
-    onBulbUnbindButtonTapped : function(dataItem, bulb) {
-        var controller = this,
-            store      = Ext.getStore('Bulbs');
+    onBulbUnbindButtonTapped : function(bulb, channel) {
+        var binded = bulb.get('binded');
 
-        if (!bulb) {
-            return;
+        if (typeof(binded) !== "object") {
+            binded = {};
         }
-        bulb.set('binded', false);
+        binded[channel] = 0;
 
-        this.performRequest(Ext.String.format('/{0}/', bulb.get('id')), 'UNLINK', bulb);
+        bulb.set('binded', binded);
+
+        this.performRequest(Ext.String.format('/{0}/{1}', bulb.get('id'), channel), 'UNLINK', bulb);
     },
 
 /*****************************************************************************/
 
-    onBulbDeleteButtonTapped : function(dataItem, bulb) {
+    onBulbDeleteButtonTapped : function(bulb, dataItem) {
         var store = Ext.getStore('Bulbs');
 
-        if (bulb.get('binded')) {
+        if (bulb.isBinded()) {
             return Ext.Msg.alert('Bulb is binded', 'You need to unbind it first!');
         }
 
@@ -214,6 +236,10 @@ Ext.define('nooControl.controller.Bulb', {
             bulb   = store.getById(form.getRecord().get('id'));
 
         bulb.set(form.getValues());
+
+        if (!bulb.dirty) {
+            return controller.showHomeScreen();
+        }
 
         if (!bulb.isValid()) {
             return Ext.Msg.alert('Validation failed', 'Some field values are invalid or missing!');
@@ -288,6 +314,32 @@ Ext.define('nooControl.controller.Bulb', {
 
 /*****************************************************************************/
 
+    onBulbStartRollButtonTapped : function(btn) {
+        var controller = this,
+            dataItem   = btn.up('BulbDataItem'),
+            store      = Ext.getStore('Bulbs'),
+            bulb       = store.getById(dataItem._record.get('id'));
+
+        if (bulb) {
+            this.performRequest(Ext.String.format('/{0}/command/{1}', bulb.get('id'), 'roll'), 'PUT', bulb);
+        }
+    },
+
+/*****************************************************************************/
+
+    onBulbStopRollButtonTapped : function(btn) {
+        var controller = this,
+            dataItem   = btn.up('BulbDataItem'),
+            store      = Ext.getStore('Bulbs'),
+            bulb       = store.getById(dataItem._record.get('id'));
+
+        if (bulb) {
+            this.performRequest(Ext.String.format('/{0}/command/{1}', bulb.get('id'), 'stop'), 'PUT', bulb);
+        }
+    },
+
+/*****************************************************************************/
+
     performRequest : function(url, method, bulb) {
         var controller = this,
             store      = Ext.getStore('Bulbs');
@@ -315,5 +367,3 @@ Ext.define('nooControl.controller.Bulb', {
         }
     }
 });
-
-

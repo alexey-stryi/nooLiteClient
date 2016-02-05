@@ -25,6 +25,7 @@ Ext.define('nooControl.form.bulb.DataItem', {
                 xtype   : 'component',
                 itemId  : 'bulb_name',
                 cls     : 'bulb-data-item-text',
+                width   : 170,
                 padding : 10
             },{
                 xtype : 'spacer'
@@ -65,7 +66,7 @@ Ext.define('nooControl.form.bulb.DataItem', {
                     layout : { pack : 'center', type: 'hbox' },
                     items  : {
                         xtype  : 'button',
-                        itemId : 'led_roll_button',
+                        itemId : 'led_start_roll_button',
                         text   : 'Roll'
                     }
                 },{
@@ -73,7 +74,7 @@ Ext.define('nooControl.form.bulb.DataItem', {
                     layout : { pack : 'center', type: 'hbox' },
                     items  : {
                         xtype  : 'button',
-                        itemId : 'led_stop_button',
+                        itemId : 'led_stop_roll_button',
                         text   : 'Stop'
                     }
                 }]
@@ -91,6 +92,7 @@ Ext.define('nooControl.form.bulb.DataItem', {
         }
 
         me.down('#bulb_name').setHtml(record.get('name'));
+        me.down('#bulb_name').setDisabled(!record.isBinded());
         me.down('#bulb_state_switch').setValue(record.get('state') === 'on');
 
         switch (record.get('type')) {

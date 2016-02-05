@@ -41,6 +41,9 @@
 
 .bulb-data-item-text {
   color: white;
+  &.x-item-disabled {
+    color: lightgrey;
+  }
 }
 
 
